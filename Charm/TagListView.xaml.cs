@@ -23,6 +23,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 using Serilog;
 using WwiseParserLib.Parsers;
 using WwiseParserLib.Structures.SoundBanks;
+using WwiseParserLib.Structures.Chunks;
 
 
 namespace Charm;
@@ -1657,11 +1658,14 @@ public partial class TagListView : UserControl
             return;
         
         SoundBank soundBank = new InMemorySoundBank(tag.Header.Unk18.Header.SoundBank.GetData());
-        if (soundBank.GetChunk(WwiseParserLib.Structures.Chunks.SoundBankChunkType.HIRC) == null)
+        if (soundBank.GetChunk(SoundBankChunkType.BKHD) == null)
+        {
+            _tagListLogger.Error($"Soundbank {tag.Header.Unk18.Header.SoundBank.Hash} does not have a valid BKHD header");
+        }
+        else if (soundBank.GetChunk(SoundBankChunkType.HIRC) == null)
         {
             _tagListLogger.Error($"Soundbank {tag.Header.Unk18.Header.SoundBank.Hash} does not have a valid HIRC header");
         }
-        
 
         await viewer.MusicPlayer.SetSound(tag);
         SetExportFunction(ExportSound, (int)EExportTypeFlag.Full);
