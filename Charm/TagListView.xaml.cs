@@ -21,6 +21,9 @@ using Field.Strings;
 using Field.Textures;
 using Microsoft.Toolkit.Mvvm.Input;
 using Serilog;
+using WwiseParserLib.Parsers;
+using WwiseParserLib.Structures.SoundBanks;
+
 
 namespace Charm;
 
@@ -1566,7 +1569,7 @@ public partial class TagListView : UserControl
                 TagType = ETagListType.WeaponAudio
             });
         }
-        
+
         RefreshItemList();
     }
 
@@ -1652,6 +1655,15 @@ public partial class TagListView : UserControl
         WwiseSound tag = PackageHandler.GetTag(typeof(WwiseSound), tagHash);
         if (tag.Header.Unk20.Count == 0)
             return;
+        
+        SoundBank soundBank = new InMemorySoundBank(tag.Header.Unk18.Header.SoundBank.GetData());
+        if (soundBank.GetChunk(WwiseParserLib.Structures.Chunks.SoundBankChunkType.HIRC) == null)
+        {
+            _tagListLogger.Error($"Soundbank {tag.Header.Unk18.Header.SoundBank.Hash} does not have a valid BKHD header");
+            //throw new InvalidDataException("HIRC chunk not found");
+        }
+        
+
         await viewer.MusicPlayer.SetSound(tag);
         SetExportFunction(ExportSound, (int)EExportTypeFlag.Full);
         // bit of a cheat but works

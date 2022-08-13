@@ -2,3 +2,6 @@
 	path = ThirdParty/revorbstd
 	url = https://github.com/xyx0826/revorbstd
 	branch = big-enough
+[submodule "ThirdParty/WwiseParser"]
+	path = ThirdParty/WwiseParser
+	url = https://github.com/nblockbuster/WwiseParser
