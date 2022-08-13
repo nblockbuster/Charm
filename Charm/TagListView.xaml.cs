@@ -1659,8 +1659,7 @@ public partial class TagListView : UserControl
         SoundBank soundBank = new InMemorySoundBank(tag.Header.Unk18.Header.SoundBank.GetData());
         if (soundBank.GetChunk(WwiseParserLib.Structures.Chunks.SoundBankChunkType.HIRC) == null)
         {
-            _tagListLogger.Error($"Soundbank {tag.Header.Unk18.Header.SoundBank.Hash} does not have a valid BKHD header");
-            //throw new InvalidDataException("HIRC chunk not found");
+            _tagListLogger.Error($"Soundbank {tag.Header.Unk18.Header.SoundBank.Hash} does not have a valid HIRC header");
         }
         
 
